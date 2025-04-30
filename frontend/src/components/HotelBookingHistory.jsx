@@ -52,8 +52,13 @@ const HotelBookingHistory = ({
       }
       const res = await response.json();
       if (res.success) {
+        // Update the local state to reflect the cancelled status
+        setHotelBookings((prevBookings) =>
+          prevBookings.map((booking) =>
+            booking.id === bookingId ? { ...booking, status: "Cancelled" } : booking
+          )
+        );
         showToast("Your booking has been cancelled successfully!", "success");
-        fetchBookingHistory(user);
       } else {
         setError(res.error || "Failed to cancel booking");
       }
@@ -291,9 +296,9 @@ const HotelBookingHistory = ({
 
   return (
     <>
-      <h3 className="text-lg font-semibold text-gray-800">Hotel Bookings</h3>
+      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Hotel Bookings</h3>
       {hotelBookings.length === 0 ? (
-        <p className="text-gray-500 text-sm">No hotel bookings found.</p>
+        <p className="text-gray-500 text-sm sm:text-base">No hotel bookings found.</p>
       ) : (
         <>
           {hotelBookings
@@ -302,23 +307,27 @@ const HotelBookingHistory = ({
               <motion.div
                 key={booking.id}
                 variants={itemVariants}
-                className="rounded-lg p-4 shadow-md border border-gray-200"
+                className="rounded-lg p-3 sm:p-4 shadow-md border border-gray-200 mb-2"
               >
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="text-md font-medium text-gray-800">
+                <div className="flex flex-col sm:flex-row justify-between items-start mb-2">
+                  <h4 className="text-md sm:text-lg font-medium text-gray-800 mb-1 sm:mb-0">
                     {booking.hotel_name} - {booking.room_type}
                   </h4>
-                  {booking.status === "Ongoing" ? (
-                    <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                  {new Date(booking.check_out_date) < new Date() ? (
+                    <span className="bg-purple-100 text-purple-800 text-xs sm:text-sm font-semibold px-2 py-1 rounded">
+                      Completed
+                    </span>
+                  ) : booking.status === "Ongoing" ? (
+                    <span className="bg-blue-100 text-blue-800 text-xs sm:text-sm font-semibold px-2 py-1 rounded">
                       Ongoing
                     </span>
                   ) : booking.status === "Upcoming" ? (
-                    <span className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
+                    <span className="bg-green-100 text-green-800 text-xs sm:text-sm font-semibold px-2 py-1 rounded">
                       Upcoming
                     </span>
                   ) : null}
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2 text-sm sm:text-base">
                   <div>
                     <p className="text-gray-600">Booking Number</p>
                     <p className="font-medium">{booking.booking_number}</p>
@@ -384,14 +393,14 @@ const HotelBookingHistory = ({
                     <p className="font-medium">{formatDate(booking.created_at)}</p>
                   </div>
                 </div>
-                <div className="mt-4 flex gap-4">
+                <div className="mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3">
                   {booking.status === "Upcoming" && (
                     <motion.button
                       variants={buttonVariants}
                       whileHover="hover"
                       whileTap="tap"
                       onClick={() => confirmCancelBooking(booking.id)}
-                      className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+                      className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition w-full sm:w-auto"
                     >
                       Cancel Booking
                     </motion.button>
@@ -401,7 +410,7 @@ const HotelBookingHistory = ({
                     whileHover="hover"
                     whileTap="tap"
                     onClick={() => downloadInvoice(booking)}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center"
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center w-full sm:w-auto"
                   >
                     <FaDownload className="mr-2" />
                     Download Invoice
@@ -411,24 +420,24 @@ const HotelBookingHistory = ({
             ))}
           {hotelBookings.filter((booking) => booking.status === "Cancelled").length > 0 && (
             <>
-              <h3 className="text-lg font-semibold text-gray-800 mt-6">Cancelled Bookings</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mt-6 mb-4">Cancelled Bookings</h3>
               {hotelBookings
                 .filter((booking) => booking.status === "Cancelled")
                 .map((booking) => (
                   <motion.div
                     key={booking.id}
                     variants={itemVariants}
-                    className="rounded-lg p-4 shadow-xl bg-gray-100"
+                    className="rounded-lg p-3 sm:p-4 shadow-xl bg-gray-100 mb-2"
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="text-md font-medium text-gray-800">
+                    <div className="flex flex-col sm:flex-row justify-between items-start mb-2">
+                      <h4 className="text-md sm:text-lg font-medium text-gray-800 mb-1 sm:mb-0">
                         {booking.hotel_name} - {booking.room_type}
                       </h4>
-                      <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded">
+                      <span className="bg-red-100 text-red-800 text-xs sm:text-sm font-semibold px-2 py-1 rounded">
                         Cancelled
                       </span>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2 text-sm sm:text-base">
                       <div>
                         <p className="text-gray-600">Booking Number</p>
                         <p className="font-medium">{booking.booking_number}</p>
@@ -446,13 +455,13 @@ const HotelBookingHistory = ({
                         <p className="font-medium">{formatDate(booking.check_out_date)}</p>
                       </div>
                     </div>
-                    <div className="mt-4">
+                    <div className="mt-2">
                       <motion.button
                         variants={buttonVariants}
                         whileHover="hover"
                         whileTap="tap"
                         onClick={() => downloadInvoice(booking)}
-                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center"
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center w-full sm:w-auto"
                       >
                         <FaDownload className="mr-2" />
                         Download Invoice
@@ -475,7 +484,7 @@ const HotelBookingHistory = ({
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
           >
             <motion.div
-              className="bg-white rounded-xl p-6 w-full max-w-md relative"
+              className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-sm sm:max-w-md relative"
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
@@ -489,15 +498,15 @@ const HotelBookingHistory = ({
               >
                 <IoClose size={24} />
               </motion.button>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Confirm Cancellation</h2>
-              <p className="text-gray-600 mb-6">Are you sure you want to cancel your booking?</p>
-              <div className="flex justify-end gap-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Confirm Cancellation</h2>
+              <p className="text-gray-600 mb-6 text-sm sm:text-base">Are you sure you want to cancel your booking?</p>
+              <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
                 <motion.button
                   variants={buttonVariants}
                   whileHover="hover"
                   whileTap="tap"
                   onClick={handleCancelConfirmation}
-                  className="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition"
+                  className="bg-gray-300 text-gray-800 px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-400 transition w-full sm:w-auto"
                 >
                   No
                 </motion.button>
@@ -506,7 +515,7 @@ const HotelBookingHistory = ({
                   whileHover="hover"
                   whileTap="tap"
                   onClick={handleConfirmCancel}
-                  className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
+                  className="bg-green-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-green-700 transition w-full sm:w-auto"
                 >
                   Yes
                 </motion.button>

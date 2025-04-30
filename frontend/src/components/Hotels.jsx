@@ -7,7 +7,6 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Header from "./Header";
 import TravelDeals from "./TravelDeals";
 import FeaturesSection from "./FeaturesSection";
 import HotelFAQ from "./HotelFAQ";

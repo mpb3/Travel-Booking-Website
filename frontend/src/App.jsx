@@ -27,6 +27,14 @@ import HotelBooking from "./components/HotelBooking";
 import FlightBookingHistory from "./components/FlightBookingHistory";
 import HotelBookingHistory from "./components/HotelBookingHistory";
 import IndividualHotelDeals from "./components/IndividualHotelDeals";
+import CabBookingConfirmation from "./components/CabBookingConfirmation";
+import CarHireFAQ from "./components/CarHireFAQ";
+import CarConfirmation from "./components/CarConfirmation";
+import Cancel from "./components/Cancel";
+import TermsAndConditions from "./components/TermsAndConditions";
+import CarCard from "./components/CarCard";
+import CabBookingHistory from "./components/CabBookingHistory";
+
 
 const initialFlightData = [
   {
@@ -422,6 +430,14 @@ function App() {
           <Route path="/flight-booking-history" element={<FlightBookingHistory />} />
           <Route path="/hotel-booking-history" element={<HotelBookingHistory />} />
           <Route path="/individual-hotel-deals/:hotel/:arrival" element={<IndividualHotelDeals />} />
+          <Route path="/cab-booking-confirmation" element={<CabBookingConfirmation />} />
+          <Route path="/car-hire-faq" element={<CarHireFAQ />} />
+          <Route path="/car-confirmation" element={<CarConfirmation />} />
+          <Route path="/cancel" element={<Cancel />} />
+          <Route path="/car-card" element={<CarCard />} />
+          <Route path="/cabs" element={<CabListing />} />
+          <Route path="/cab-booking-history" element={<CabBookingHistory />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
 
 
           
